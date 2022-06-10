@@ -1,11 +1,33 @@
+#!/bin/bash
+
+# ========== 使用方法 ===========
+
+# 域名方式
+# ./tls.sh self.wujing.site 172.1.2.xx 172.1.2.xx 172.1.2.xx
+
+# localhsot方式
+# ./tls.sh localhost 172.1.2.xx 172.1.2.xx 172.1.2.xx
+
+# ==============================
+
+# 传入域名或者 localhost
+CN=$1
+
+# 传入3个节点的内网IP
+HOST_1=$2
+HOST_2=$3
+HOST_3=$4
+
+
+
 # * 为必改项
 # * 服务器FQDN或颁发者名(更换为你自己的域名)，没有就写 localhost
-CN='localhost'
+CN='$CN'
 
 # 扩展信任IP或域名
 
 ## 一般ssl证书只信任域名的访问请求，有时候需要使用ip去访问server，那么需要给ssl证书添加扩展IP，用逗号隔开。
-SSL_IP='两种方式都需要写IP'
+SSL_IP='$HOST_1,$HOST_2,$HOST_3'
 SSL_DNS=''
 
 # 国家名(2个字母的代号)

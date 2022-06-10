@@ -4,46 +4,49 @@
 
 部署企业版HA环境：
 1. 创建3个ec2实例，规格t3a.medium
-2. 在3台主机上分别执行 rke-perpare.sh。ssh 信任还没有弄好，暂时手动设置
+2. 在3台主机上分别在Ubuntu用户下执行 1-rke-perpare.sh。
 ```
-curl https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/rke-prepare.sh
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/1-rke-prepare.sh
+chmod +x 1-rke-prepare.sh
 
 修改脚本，设置docker login
 
-./rke-prepare.sh v2.6.5-ent
+./1-rke-prepare.sh v2.6.5-ent
 
+执行脚本后设置ssh信任
 ```
-3. 选择一个节点，部署rke集群
+3. 选择一个节点，在Ubuntu用户下执行脚本，部署rke集群
 ```
-curl https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/rke-install.sh
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/2-rke-install.sh 
+chmod +x 2-rke-install.sh 
 
-./rke-install.sh  rke6 172.31.25.xx 172.31.16.xx 172.31.28.xx
+./2-rke-install.sh rke6 172.1.2.xx 172.1.2.xx 172.1.2.xx | sh -
 ```
+4. 切到root用户下，部署helm、设置证书
+```
+sudo su -
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/3-helm-ca.sh 
+chmod +x 3-helm-ca.sh
+
+./3-helm-ca.sh ./3-helm-ca.sh 172.1.2.xx 172.1.2.xx 172.1.2.xx
+```
+5. 自签名域名访问需要nginx，创建一个ec2实例，部署nginx服务。
+```
+sudo su -
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/4-nginx.sh 
+chmod +x 4-nginx.sh
+
+./4-nginx.sh  172.1.2.xx 172.1.2.xx 172.1.2.xx
+```
+6. 部署rancher 
 
 
 
 
-2. 部署helm。 不同的k8s版本需要对应不同的helm版本。参考 helm.sh
-3. 为了测试自签名方式，需要提前准备域名证书和localhost证书。域名证书放到/root/ca下，localhost证书放到/root/ca-local下。脚本参考 tls.sh
-4. 自签名域名访问需要nginx，提前准备nginx服务。参考nginx.sh
-5. 
-
-
-
-
-### 已经存在的环境
-
-环境要求：
-1. rke部署HA集群，
-
-
-
-重新部署redeploy.md 前置条件：
-
-# 前置条件：
-# 已经存在HA环境，此脚本为删除重建的过程
-# 在ca下有hatest的域名证书
-# 在ca-local下有localhost证书
+测试使用的几个域名：
+- 自签名部署方式: `self.wujing.site`
+- rancher默认ca: `ca.wujing.site`
+- Let's Encrypt: `let.wujing.site`
 
 
 传参：

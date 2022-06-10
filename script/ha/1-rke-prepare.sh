@@ -2,10 +2,7 @@
 
 # ========== 使用方法 ===========
 
-# ./rke-prepare.sh v2.6.5-ent
-
-# ./rke-prepare.sh $node1 $node2 $node3
-# ./rke-prepare.sh 172.31.25.xx 172.31.16.xx 172.31.28.xx
+# ./1-rke-prepare.sh v2.6.5-ent
 
 # ==============================
 
