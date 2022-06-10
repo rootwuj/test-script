@@ -38,11 +38,7 @@ nodes:
   - address: $HOST_3
     user: ubuntu
     role: [controlplane,worker,etcd]
-
-ingress:
-  options:
-    allow-snippet-annotations: "true" 
-
+    
 services:
   etcd:
     snapshot: true

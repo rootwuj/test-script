@@ -36,6 +36,9 @@ funCaDomain(){
 
   sudo su -c 'helm repo update'
 
+  echo '=============== 这里会等待10秒，validate.nginx.ingress.kubernetes.io ================ '
+
+  sleep 10
 }
 
 funCaLocalhost(){
@@ -45,6 +48,10 @@ funCaLocalhost(){
   sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca-local/cacerts.pem' # ca位置根据实际情况修改
 
   sudo su -c 'helm repo update'
+
+  echo '=============== 这里会等待10秒，validate.nginx.ingress.kubernetes.io ================ '
+
+  sleep 10
 }
 
 funCertManager(){
@@ -60,6 +67,9 @@ funCertManager(){
   sudo su -c 'kubectl create namespace cattle-system'
   sudo su -c 'kubectl get pods --namespace cert-manager'
 
+  echo '=============== 这里会等待10秒，validate.nginx.ingress.kubernetes.io ================ '
+
+  sleep 10
 }
 
 
