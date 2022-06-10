@@ -4,13 +4,25 @@
 
 部署企业版HA环境：
 1. 创建3个ec2实例，规格t3a.medium
-2. 在3台主机上分别执行 rke-perpare.sh
+2. 在3台主机上分别执行 rke-perpare.sh。ssh 信任还没有弄好，暂时手动设置
+```
+curl https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/rke-prepare.sh
+
+修改脚本，设置docker login
+
+./rke-prepare.sh v2.6.5-ent
+
+```
+3. 选择一个节点，部署rke集群
+```
+curl https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/rke-install.sh
+
+./rke-install.sh  rke6 172.31.25.xx 172.31.16.xx 172.31.28.xx
+```
 
 
 
 
-1. 部署rke1集群，为了方便验证2.4/2.5/2.6版本，需要准备使用3个版本的rke。部署rke集群参考脚本 rke-install.sh
-- 
 2. 部署helm。 不同的k8s版本需要对应不同的helm版本。参考 helm.sh
 3. 为了测试自签名方式，需要提前准备域名证书和localhost证书。域名证书放到/root/ca下，localhost证书放到/root/ca-local下。脚本参考 tls.sh
 4. 自签名域名访问需要nginx，提前准备nginx服务。参考nginx.sh
