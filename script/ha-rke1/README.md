@@ -81,6 +81,8 @@ create database rancher;
 为了验证多种部署方式，可以使用脚本 5-ha-redeploy.sh
 
 ```
+# 在Ubuntu用户下执行
+
 wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/5-ha-redeploy.sh
 
 chmod +x 5-ha-redeploy.sh
