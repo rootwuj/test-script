@@ -2,25 +2,25 @@
 
 # ========== 使用方法 ===========
 
-# ./redeploy.sh $rke $chart $version $tpye
-# ./redeploy.sh rke6 pandaria-rc v2.6.5-ent-rc4 3 172.x.x.x
+# ./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.x.x.x
 
 # ==============================
 
-rke=$1 # rke的版本，输入rke名称
-chart=$2 # 2.5:pandaria，2.6的rc：pandaria-rc，2.6的正式版本：pandaria-stabel
-version=$3 # 企业版版本：v2.6.5-ent-rc5
-type=$4 # 部署rancher的方式
-dbhost=$5 # 数据库IP
+# 传入参数参考README.md
+RKE_NAME=$1 # 输入集群环境中rke的名称，例如：rke6
+CHART_NAME=$2 # 输入chart名称 - 2.5:pandaria，- 2.6的rc版：pandaria-rc，- 2.6的正式版本：pandaria-stable
+PANDARIA_VERSION=$3 # 企业版版本 例如：v2.6.5-ent
+DEPLOY_METHOD=$4 # HA部署方式 例如：1
+DB_HOST=$5 # 数据库内网IP
 
 
 # 卸载rke集群
-echo y | ./$rke remove --config cluster.yml
+echo y | ./$RKE_NAME remove --config cluster.yml
 
 echo '================成功删除集群================'
 
 # 重新部署rke集群
-./$rke up
+./$RKE_NAME up
 
 echo '================集群部署完成================'
 
@@ -32,8 +32,8 @@ sudo su -c 'cp /home/ubuntu/kube_config_cluster.yml /root/.kube/config'
 funCaDomain(){
 	# 设置ca证书 域名
 	sudo su -c 'kubectl create namespace cattle-system'
-	sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca/tls.crt --key=/root/ca/tls.key'
-	sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca/cacerts.pem'
+	sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca/tls.crt --key=/root/ca/tls.key' # ca位置根据实际情况修改
+	sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca/cacerts.pem' # ca位置根据实际情况修改
 
 	sudo su -c 'helm repo update'
 
@@ -42,8 +42,8 @@ funCaDomain(){
 funCaLocalhost(){
 	# 设置ca证书 localhost
 	sudo su -c 'kubectl create namespace cattle-system'
-	sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca-local/tls.crt --key=/root/ca-local/tls.key'
-	sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca-local/cacerts.pem'
+	sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca-local/tls.crt --key=/root/ca-local/tls.key' # ca位置根据实际情况修改
+	sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca-local/cacerts.pem' # ca位置根据实际情况修改
 
 	sudo su -c 'helm repo update'
 }
@@ -67,23 +67,23 @@ funCertManager(){
 
 # 部署rancher
 
-case $type in
+case $DEPLOY_METHOD in
     1)  
 		# 1. deployment 使用自签名证书：部署成功，可以通过域名访问
 
 		funCaDomain
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
 		  --namespace cattle-system \
-		  --set hostname=hatest.wujing.site \
+		  --set hostname=self.wujing.site \
 		  --set ingress.tls.source=secret \
 		  --set privateCA=true \
 		  --set bootstrapPassword=Rancher@123456 \
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -93,10 +93,10 @@ case $type in
     	  --set auditLogServer.archive.type=day\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
-		echo 'deployment 使用自签名证书，通过 hatest.wujing.site 域名访问'
+		echo 'deployment 使用自签名证书，通过 self.wujing.site 域名访问'
 
     ;;
     2)  
@@ -105,7 +105,7 @@ case $type in
 		funCaLocalhost
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
 		  --namespace cattle-system \
 		  --set service.type=NodePort \
 		  --set service.ports.nodePort=30443  \
@@ -115,7 +115,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -125,7 +125,7 @@ case $type in
     	  --set auditLogServer.archive.type=week\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */1 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'deployment 使用自签名证书+NodePort，可以通过30443端口访问'
@@ -138,14 +138,14 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
 		  --namespace cattle-system \
-		  --set hostname=ha.wujing.site \
+		  --set hostname=ca.wujing.site \
 		  --set bootstrapPassword=Rancher@123456 \
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -155,10 +155,10 @@ case $type in
     	  --set auditLogServer.archive.type=month\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
-		echo 'deployment 使用默认 CA，可以通过域名 ha.wujing.site 访问'
+		echo 'deployment 使用默认 CA，可以通过域名 ca.wujing.site 访问'
 
     ;;
     4)  
@@ -168,14 +168,14 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
           --namespace cattle-system \
           --set service.type=NodePort \
 		  --set bootstrapPassword=Rancher@123456 \
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -185,7 +185,7 @@ case $type in
     	  --set auditLogServer.archive.type=quarter\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */10 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'deployment 使用默认 CA + NodePort：部署成功，可以通过30443端口访问'
@@ -199,9 +199,9 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
   		  --namespace cattle-system \
-  		  --set hostname=perf.wujing.site \
+  		  --set hostname=let.wujing.site \
   		  --set bootstrapPassword=admin \
   		  --set ingress.tls.source=letsEncrypt \
   		  --set letsEncrypt.email=me@example.org \
@@ -210,7 +210,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -220,10 +220,10 @@ case $type in
     	  --set auditLogServer.archive.type=day\
     	  --set auditLogServer.archive.cronType=mysql \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
-		echo 'deployment 使用Lets Encrypt证书：部署成功，可以通过域名访问'
+		echo 'deployment 使用Lets Encrypt证书：部署成功，可以通过 let.wujing.site 访问'
 
 
 
@@ -235,15 +235,15 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
-    	  --set hostname=ha.wujing.site \
+    	  --set hostname=ca.wujing.site \
     	  --set rancherDeployType=DaemonSet \
 		  --set bootstrapPassword=Rancher@123456 \
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -253,10 +253,10 @@ case $type in
     	  --set auditLogServer.archive.type=week\
     	  --set auditLogServer.archive.cronType=mysql \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
-		echo 'DaemonSet 使用默认 CA：部署成功，可以通过域名访问'
+		echo 'DaemonSet 使用默认 CA：部署成功，可以通过域名 ca.wujing.site 访问'
 
 
     ;;
@@ -267,7 +267,7 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
     	  --set service.type=NodePort \
     	  --set rancherDeployType=DaemonSet \
@@ -275,7 +275,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -285,7 +285,7 @@ case $type in
     	  --set auditLogServer.archive.type=month\
     	  --set auditLogServer.archive.cronType=mysql \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'DaemonSet使用默认 CA+NodePort：部署成功，可以通过30443端口访问'
@@ -298,7 +298,7 @@ case $type in
 		funCertManager
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
     	  --set service.type=HostPort \
     	  --set rancherDeployType=DaemonSet \
@@ -306,7 +306,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -316,7 +316,7 @@ case $type in
     	  --set auditLogServer.archive.type=quarter\
     	  --set auditLogServer.archive.cronType=mysql \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'DaemonSet 使用默认 CA+HostPort：部署成功，可以通过10443端口访问'
@@ -329,9 +329,9 @@ case $type in
 		funCaDomain
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
-    	  --set hostname=hatest.wujing.site \
+    	  --set hostname=self.wujing.site \
     	  --set ingress.tls.source=secret \
     	  --set privateCA=true \
     	  --set rancherDeployType=DaemonSet \
@@ -339,7 +339,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -349,10 +349,10 @@ case $type in
     	  --set auditLogServer.archive.type=day\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
-		echo 'DaemonSet 使用自签名证书：部署成功，可以通过域名访问'
+		echo 'DaemonSet 使用自签名证书：部署成功，可以通过域名 self.wujing.site  访问'
 
     ;;
     10)  
@@ -362,7 +362,7 @@ case $type in
 		funCaLocalhost
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
 		  --set service.type=NodePort \
     	  --set ingress.tls.source=secret \
@@ -371,7 +371,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -381,7 +381,7 @@ case $type in
     	  --set auditLogServer.archive.type=day\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'DaemonSet 使用自签名证书+NodePort：部署成功，可以通过30443端口访问'
@@ -394,7 +394,7 @@ case $type in
 		funCaLocalhost
 
 		sudo su -c '
-		helm install rancher '$chart'/rancher \
+		helm install rancher '$CHART_NAME'/rancher \
     	  --namespace cattle-system \
 		  --set service.type=HostPort \
     	  --set ingress.tls.source=secret \
@@ -403,7 +403,7 @@ case $type in
 		  --set auditLogServer.serverPort=9000 \
     	  --set auditLog.destination=server \
     	  --set auditLog.level=3 \
-    	  --set auditLogServer.DBHost='$dbhost' \
+    	  --set auditLogServer.DBHost='$DB_HOST' \
     	  --set auditLogServer.DBPort=3306 \
     	  --set auditLogServer.DBUser=root \
     	  --set auditLogServer.DBPassword=Rancher@123 \
@@ -413,13 +413,13 @@ case $type in
     	  --set auditLogServer.archive.type=day\
     	  --set auditLogServer.archive.cronType=server \
     	  --set auditLogServer.archive.cronSpec="0 */5 * * * ?" \
-		  --version '$version'
+		  --version '$PANDARIA_VERSION'
 		'
 
 		echo 'DaemonSet 使用自签名证书+HostPort：部署成功，可以通过10443端口访问'
 
     ;;
-    *)  echo '你没有输入正确的部署方式代码，请参考readme输入'
+    *)  echo '你没有输入正确的部署方式代码，请参考 README.md 传参说明输入'
     ;;
 esac
 
