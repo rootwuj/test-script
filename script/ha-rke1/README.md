@@ -13,7 +13,7 @@ HA部署/重新部署：
 2. 在3台主机上分别在Ubuntu用户下执行 1-rke-perpare.sh。
 
 ```
-wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/1-rke-prepare.sh
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/1-rke-prepare.sh
 
 chmod +x 1-rke-prepare.sh
 
@@ -27,7 +27,7 @@ chmod +x 1-rke-prepare.sh
 3. 选择一个节点，在Ubuntu用户下执行脚本，部署rke集群
 
 ```
-wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/2-rke-install.sh 
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/2-rke-install.sh
 
 chmod +x 2-rke-install.sh 
 
@@ -39,7 +39,7 @@ chmod +x 2-rke-install.sh
 ```
 sudo su -
 
-wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/3-helm-ca.sh 
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/3-helm-ca.sh
 
 chmod +x 3-helm-ca.sh
 
@@ -51,7 +51,7 @@ chmod +x 3-helm-ca.sh
 ```
 sudo su -
 
-wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha/4-nginx-l4.sh 
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/4-nginx-l4.sh
 
 chmod +x 4-nginx-l4.sh
 
@@ -81,6 +81,10 @@ create database rancher;
 为了验证多种部署方式，可以使用脚本 5-ha-redeploy.sh
 
 ```
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/5-ha-redeploy.sh
+
+chmod +x 5-ha-redeploy.sh
+
 ./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.x.x.x
 ```
 
