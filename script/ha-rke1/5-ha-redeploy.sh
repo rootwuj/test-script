@@ -2,7 +2,7 @@
 
 # ========== 使用方法 ===========
 
-# ./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.1.2.3
+# ./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 172.1.1.1 3
 
 # ==============================
 
@@ -10,9 +10,8 @@
 RKE_NAME=$1 # 输入集群环境中rke的名称，例如：rke6
 CHART_NAME=$2 # 输入chart名称 - 2.5:pandaria，- 2.6的rc版：pandaria-rc，- 2.6的正式版本：pandaria-stable
 PANDARIA_VERSION=$3 # 企业版版本 例如：v2.6.5-ent
-DEPLOY_METHOD=$4 # HA部署方式 例如：1
-DB_HOST=$5 # 数据库内网IP
-
+DB_HOST=$4 # 数据库内网IP
+DEPLOY_METHOD=$5 # HA部署方式 例如：3
 
 # 卸载rke集群
 echo y | ./$RKE_NAME remove --config cluster.yml
