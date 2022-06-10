@@ -60,6 +60,8 @@ chmod +x 4-nginx-l4.sh
 
 6. 部署mysql，为部署审计日志做准备
 
+> 为了节省资源可以在部署nginx的主机上安装mysql
+
 ```
 # 启动
 docker run --name mysql --restart=unless-stopped -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Rancher@123 -d mysql
