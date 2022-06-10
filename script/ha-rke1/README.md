@@ -85,7 +85,7 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/5
 
 chmod +x 5-ha-redeploy.sh
 
-./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.x.x.x
+./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.1.2.3
 ```
 
 传参说明：
