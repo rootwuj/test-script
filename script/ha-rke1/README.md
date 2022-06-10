@@ -89,7 +89,7 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/5
 
 chmod +x 5-ha-redeploy.sh
 
-./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 1 172.1.2.3
+./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 172.1.1.1 3
 ```
 
 传参说明：
@@ -106,7 +106,9 @@ chmod +x 5-ha-redeploy.sh
 
 - PANDARIA_VERSION 企业版版本 例如：v2.6.5-ent v2.6.5-ent-rc7 v2.5.14-ent
 
-- DEPLOY_METHOD HA部署方式 例如：1 代表按照deployment使用自签名证书方式部署
+- DB_HOST 第6步设置的数据库内网IP
+
+- DEPLOY_METHOD HA部署方式 例如：3 代表按照deployment使用默认CA方式部署
 
 参数 | 部署方式 | 访问方式
 ---|---|---
@@ -122,7 +124,6 @@ chmod +x 5-ha-redeploy.sh
 10 | Daemonset 使用自签名证书+NodePort |  使用`ip:30443`访问
 11 | Daemonset 使用自签名证书+HostPort |  使用`ip:10443`访问
 
-- DB_HOST 第6步设置的数据库内网IP
 
 8. 配置域名映射
 
