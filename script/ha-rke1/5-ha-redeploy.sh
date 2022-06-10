@@ -418,7 +418,7 @@ case $DEPLOY_METHOD in
     echo 'DaemonSet 使用自签名证书+HostPort：部署成功，可以通过10443端口访问'
 
     ;;
-    *)  echo '你没有输入正确的部署方式代码，请参考 README.md 传参说明输入'
+    *)  echo 'ERROR: 你没有输入正确的部署方式代码，请参考 README.md 传参说明输入'
     ;;
 esac
 
