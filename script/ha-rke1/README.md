@@ -19,6 +19,7 @@ chmod +x 1-rke-prepare.sh
 
 # 修改脚本，设置docker login
 
+# ./1-rke-prepare.sh 企业版版本
 ./1-rke-prepare.sh v2.6.5-ent
 
 # 执行脚本后设置ssh信任
@@ -27,11 +28,13 @@ chmod +x 1-rke-prepare.sh
 3. 选择一个节点，在Ubuntu用户下执行脚本，部署rke集群
 
 ```
+# 验证新版本，需要先确认一下脚本的rke版本是否为最新
 wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/2-rke-install.sh
 
 chmod +x 2-rke-install.sh 
 
-./2-rke-install.sh rke6 172.1.2.xx 172.1.2.xx 172.1.2.xx | sh -
+# ./2-rke-install.sh rke名称 节点1 节点2 节点3
+./2-rke-install.sh rke6 172.1.2.xx 172.1.2.xx 172.1.2.xx
 ```
 
 4. 切到root用户下，部署helm、设置证书
@@ -43,6 +46,7 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/3
 
 chmod +x 3-helm-ca.sh
 
+# ./3-helm-ca.sh 节点1 节点2 节点3
 ./3-helm-ca.sh 172.1.2.xx 172.1.2.xx 172.1.2.xx
 ```
 
@@ -55,6 +59,7 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/4
 
 chmod +x 4-nginx-l4.sh
 
+# ./4-nginx-l4.sh 节点1 节点2 节点3
 ./4-nginx-l4.sh  172.1.2.xx 172.1.2.xx 172.1.2.xx
 ```
 
@@ -78,9 +83,9 @@ create database rancher;
 
 7. 部署企业版/重新部署企业版
 
-如果只希望部署一个新的HA环境，这里也可以直接用helm install命令部署。（使用脚本会先卸载rke再重新安装）
+- 如果只希望部署一个新的HA环境，这里也可以直接用helm install命令部署。（使用脚本会先卸载rke再重新安装）
 
-为了验证多种部署方式，可以使用脚本 5-ha-redeploy.sh
+- 为了验证多种部署方式，可以使用脚本 5-ha-redeploy.sh
 
 ```
 # 在Ubuntu用户下执行
@@ -89,6 +94,7 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/5
 
 chmod +x 5-ha-redeploy.sh
 
+# ./5-ha-redeploy.sh rke名称 chart 企业版版本 mysql地址 部署方式
 ./5-ha-redeploy.sh rke6 pandaria-stable v2.6.5-ent 172.1.1.1 3
 ```
 

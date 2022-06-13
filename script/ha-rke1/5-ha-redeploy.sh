@@ -35,12 +35,21 @@ funCaDomain(){
   sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca/tls.crt --key=/root/ca/tls.key' # ca位置根据实际情况修改
   sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca/cacerts.pem' # ca位置根据实际情况修改
 
+  echo '=============这里会等待10秒============='
+
+  sleep 10
+
 }
 
 funCaLocalhost(){
   # 设置ca证书 localhost
   sudo su -c 'kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=/root/ca-local/tls.crt --key=/root/ca-local/tls.key' # ca位置根据实际情况修改
   sudo su -c 'kubectl -n cattle-system create secret generic tls-ca --from-file=/root/ca-local/cacerts.pem' # ca位置根据实际情况修改
+
+  echo '=============这里会等待10秒============='
+
+  sleep 10
+
 
 }
 
