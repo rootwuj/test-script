@@ -9,9 +9,12 @@
 # 在root用户下执行
 
 # 如果使用自签名证书部署，需要先生成证书
+# wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-autok3s/0-ca.sh
+# chmod +x 0-ca.sh
 # ./0-ca.sh 172.1.2.xx,172.1.2.xx,172.1.2.xx
 
 # 部署企业版
+# ./ha-autok3s.sh chart 企业版版本 mysql地址
 ./ha-autok3s.sh pandaria-stable v2.6.5-ent 172.1.1.1 3
 
 ```
