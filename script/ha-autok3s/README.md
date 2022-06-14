@@ -14,19 +14,20 @@
 # ./0-ca.sh 172.1.2.xx,172.1.2.xx,172.1.2.xx
 
 # 部署企业版
+https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-autok3s/ha-autok3s.sh
+chmod +x ha-autok3s.sh
+
 # ./ha-autok3s.sh chart 企业版版本 mysql地址
 ./ha-autok3s.sh pandaria-stable v2.6.5-ent 172.1.1.1 3
 
 ```
 
-## 在另外两个节点Pull镜像
+## 在3个节点Pull镜像
 ```
-PANDARIA_VERSION=""
-
 # 设置docker login
-docker login -u xxx -p xxx
+sudo docker login -u xxx -p xxx
 # 设置要测试的版本
-docker pull cnrancher/rancher:$PANDARIA_VERSION
+sudo docker pull cnrancher/rancher:<version>
 
 ```
 

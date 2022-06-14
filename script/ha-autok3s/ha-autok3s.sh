@@ -13,11 +13,6 @@ DB_HOST=$3 # 数据库内网IP
 DEPLOY_METHOD=$4 # HA部署方式 例如：3
 
 
-# 设置docker login
-docker login -u xxx -p xxx
-# 设置要测试的版本
-docker pull cnrancher/rancher:$PANDARIA_VERSION
-
 # helm
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
