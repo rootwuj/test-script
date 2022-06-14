@@ -27,7 +27,7 @@ CN=$CN
 # 扩展信任IP或域名
 
 ## 一般ssl证书只信任域名的访问请求，有时候需要使用ip去访问server，那么需要给ssl证书添加扩展IP，用逗号隔开。
-SSL_IP=$HOST_1,$HOST_2,$HOST_3
+SSL_IP='$HOST_1,$HOST_2,$HOST_3'
 SSL_DNS=''
 
 # 国家名(2个字母的代号)
