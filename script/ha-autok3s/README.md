@@ -8,13 +8,13 @@
 ```
 # 在root用户下执行
 
-# 如果使用自签名证书部署，需要先生成证书
+# 如果使用自签名证书部署，需要先生成证书(不使用这种部署方式则略过)
 # wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-autok3s/0-ca.sh
 # chmod +x 0-ca.sh
 # ./0-ca.sh 172.1.2.xx,172.1.2.xx,172.1.2.xx
 
 # 部署企业版
-https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-autok3s/ha-autok3s.sh
+wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-autok3s/ha-autok3s.sh
 chmod +x ha-autok3s.sh
 
 # ./ha-autok3s.sh chart 企业版版本 mysql地址
