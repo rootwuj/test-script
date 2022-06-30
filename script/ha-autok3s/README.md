@@ -46,3 +46,7 @@ sudo docker pull cnrancher/rancher:<version>
 9 | Daemonset 使用自签名证书 | 使用域名`self.wujing.site`访问
 10 | Daemonset 使用自签名证书+NodePort |  使用`ip:30443`访问
 11 | Daemonset 使用自签名证书+HostPort |  使用`ip:10443`访问
+
+
+## 参考视频
+![autok3s](https://user-images.githubusercontent.com/42061003/176578681-9f55d9a5-2dcd-41f1-8d0c-231a27d69be3.gif)
