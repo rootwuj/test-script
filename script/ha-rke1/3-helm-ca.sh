@@ -31,11 +31,15 @@ chmod +x tls.sh
 # 安装helm
 cd /root
 
-# 适用于2.4和2.5环境
+# 2.4 需要使用3.4.x及以下版本helm
+# wget https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz
+# tar -zxvf helm-v3.4.1-linux-amd64.tar.gz
+
+# 适用于2.5环境
 # wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
 # tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
 
-# 适用于2.5和2.6环境
+# 适用于2.6环境
 wget https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz
 tar -zxvf helm-v3.8.2-linux-amd64.tar.gz
 
