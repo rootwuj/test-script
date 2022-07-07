@@ -2,13 +2,13 @@
 
 # ========== 使用方法 ===========
 
-# ./3-helm-ca.sh rke4 172.1.2.xx,172.1.2.xx,172.1.2.xx
+# ./3-helm-ca.sh 4 172.1.2.xx,172.1.2.xx,172.1.2.xx
 
 # ==============================
 
 
 # 传入rke版本，部署对应的helm
-RKE_VERSION=$1
+VERSION=$1
 # 传入3个节点的内网IP
 HOST=$2
 
@@ -33,20 +33,20 @@ chmod +x tls.sh
 cd /root
 
 
-case $RKE_VERSION in
-    1)  
+case $VERSION in
+    4)  
     # 2.4 需要使用3.4.x及以下版本helm
     wget https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz
     tar -zxvf helm-v3.4.1-linux-amd64.tar.gz
 
     ;;
-    2)  
+    5)  
     # 适用于2.5环境
     wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
     tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
 
     ;;
-    3)  
+    6)  
     # 适用于2.6环境
     wget https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz
     tar -zxvf helm-v3.8.2-linux-amd64.tar.gz
