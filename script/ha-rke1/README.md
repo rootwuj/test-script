@@ -46,8 +46,8 @@ wget https://raw.githubusercontent.com/rootwuj/test-script/main/script/ha-rke1/3
 
 chmod +x 3-helm-ca.sh
 
-# ./3-helm-ca.sh 节点1,节点2,节点3
-./3-helm-ca.sh rke4 172.1.2.xx,172.1.2.xx,172.1.2.xx
+# ./3-helm-ca.sh 版本（4，5，6） 节点1,节点2,节点3
+./3-helm-ca.sh 4 172.1.2.xx,172.1.2.xx,172.1.2.xx
 
 ```
 
