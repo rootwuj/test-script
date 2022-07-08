@@ -201,7 +201,6 @@ case $DEPLOY_METHOD in
     helm install rancher '$CHART_NAME'/rancher \
       --namespace cattle-system \
       --set hostname=let.wujing.site \
-      --set bootstrapPassword=admin \
       --set ingress.tls.source=letsEncrypt \
       --set letsEncrypt.email=me@example.org \
       --set letsEncrypt.ingress.class=nginx \
@@ -367,6 +366,7 @@ case $DEPLOY_METHOD in
       --set ingress.tls.source=secret \
       --set privateCA=true \
       --set rancherDeployType=DaemonSet \
+      --set bootstrapPassword=Rancher@123456 \
       --set auditLogServer.serverPort=9000 \
       --set auditLog.destination=server \
       --set auditLog.level=3 \
@@ -399,6 +399,7 @@ case $DEPLOY_METHOD in
       --set ingress.tls.source=secret \
       --set privateCA=true \
       --set rancherDeployType=DaemonSet \
+      --set bootstrapPassword=Rancher@123456 \
       --set auditLogServer.serverPort=9000 \
       --set auditLog.destination=server \
       --set auditLog.level=3 \
